@@ -3,6 +3,8 @@ package com.ybapps.carmedia
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
+import android.content.ActivityNotFoundException
+import android.widget.Toast
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -217,5 +219,25 @@ private fun loadContacts(context: android.content.Context): List<PhoneContact> {
 }
 
 private fun dial(context: android.content.Context, number: String) {
-    context.startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:${Uri.encode(number)}")))
+    val cleanNumber = number.trim()
+    if (cleanNumber.isBlank()) {
+        Toast.makeText(context, "נא להזין מספר טלפון", Toast.LENGTH_SHORT).show()
+        return
+    }
+    val intent = Intent(Intent.ACTION_DIAL).apply {
+        data = Uri.fromParts("tel", cleanNumber, null)
+    }
+    try {
+        if (intent.resolveActivity(context.packageManager) != null) {
+            context.startActivity(intent)
+        } else {
+            Toast.makeText(context, "לא נמצאה במכשיר אפליקציית חיוג", Toast.LENGTH_LONG).show()
+        }
+    } catch (_: ActivityNotFoundException) {
+        Toast.makeText(context, "לא ניתן לפתוח את החייגן במכשיר הזה", Toast.LENGTH_LONG).show()
+    } catch (_: SecurityException) {
+        Toast.makeText(context, "אין הרשאה לפתוח את החייגן", Toast.LENGTH_LONG).show()
+    } catch (_: Exception) {
+        Toast.makeText(context, "אירעה שגיאה בפתיחת החייגן", Toast.LENGTH_LONG).show()
+    }
 }
