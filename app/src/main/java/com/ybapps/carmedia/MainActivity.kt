@@ -120,6 +120,7 @@ private fun CarMediaApp() {
 
 @Composable
 private fun HomeScreen(count: Int, onContacts: () -> Unit, onBluetooth: () -> Unit) {
+    val context = LocalContext.current
     var number by remember { mutableStateOf("") }
     Card(colors = CardDefaults.cardColors(containerColor = Panel), shape = RoundedCornerShape(24.dp), modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(20.dp)) {
@@ -146,7 +147,7 @@ private fun HomeScreen(count: Int, onContacts: () -> Unit, onBluetooth: () -> Un
     Spacer(Modifier.height(10.dp))
     OutlinedTextField(number, { number = it.filter { c -> c.isDigit() || c in "+*#" } }, Modifier.fillMaxWidth(), placeholder = { Text("הזן מספר טלפון") }, leadingIcon = { Icon(Icons.Default.Phone, null) }, singleLine = true, shape = RoundedCornerShape(16.dp))
     Spacer(Modifier.height(12.dp))
-    Button(onClick = { if (number.isNotBlank()) dial(LocalContext.current, number) }, enabled = number.isNotBlank(), modifier = Modifier.fillMaxWidth().height(54.dp), colors = ButtonDefaults.buttonColors(containerColor = Mint, contentColor = Navy), shape = RoundedCornerShape(16.dp)) {
+    Button(onClick = { if (number.isNotBlank()) dial(context, number) }, enabled = number.isNotBlank(), modifier = Modifier.fillMaxWidth().height(54.dp), colors = ButtonDefaults.buttonColors(containerColor = Mint, contentColor = Navy), shape = RoundedCornerShape(16.dp)) {
         Icon(Icons.Default.Call, null); Spacer(Modifier.width(8.dp)); Text("פתח חיוג", fontSize = 17.sp, fontWeight = FontWeight.Bold)
     }
     Spacer(Modifier.height(18.dp))
